@@ -1,11 +1,17 @@
 # Objenome
 
-Objenome is a dynamic and adaptive dependency injection framework.
-
-It has a concise fluent syntax that simplifies everything, so that you can
+A dynamic and adaptive dependency injection (DI) container
+with a concise fluent syntax that simplifies everything, so that you can
 enjoy the vast possibilities that its non-deterministic, ambiguity-tolerant model can generate.
 
-It is derived from Dagger v1.0 (not 2.0).
+It is designed to automatically assemble software from combinations of components.
+
+Decision ambiguities about dependencies and parameter values defines a non-deterministic
+parameter space that can be searched, mutated, combined, and optimized across in order to maximize
+objective design goals.
+
+Powered by a deterministic, minimal, fluent, pure Java, no-nonsense dependency-injection container derived from
+Dagger v1.0 (not 2.0).
 
 
 
@@ -74,7 +80,7 @@ But let's imagine how this can be resolved, at run-time:
 
  * Failure (default behavior of normal DI containers)
  * Dynamically generated Menus that allow a user to decide
- * Generate all permuttions (ex: and use them in parallel or sequence)
+ * Generate all permutations (ex: and use them in parallel or sequence)
  * A heuristic or random choice, decided in a way that optimizes an objective function (see next section)
 
 
@@ -84,10 +90,11 @@ If we know the boundaries of a non-empty possibility space, what exactly do we h
 
 Sometimes we don't know the best implementation of an interface to use for a certain situation, or the
 best number to use as a parameter in a formula, but we do have an idea of an acceptable range to look for it.
+
 Or maybe we just want to run a configuration with a given set of constant input values and collect or
 stream the results.
 
-All of these situations can be solved by a system which searches or permutes the parameter space.
+All of these situations can be "solved" by a system which searches or permutes the parameter space.
 
  * Stream/batch processing of a specific set of inputs
  * Evolutionary Algorithms

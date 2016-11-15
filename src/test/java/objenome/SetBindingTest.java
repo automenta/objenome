@@ -144,7 +144,7 @@ public final class SetBindingTest {
       @out(type=SET) Integer b() { return defaultCounter.getAndIncrement(); }
     }
 
-    O graph = O.load(new DynamicLoader(), new TestModule());
+    O graph = O.via(new DynamicLoader(), new TestModule());
     TestEntryPoint1 ep1 = graph.with(new TestEntryPoint1());
     TestEntryPoint2 ep2 = graph.with(new TestEntryPoint2());
     assertEquals(set(100, 200), ep1.objects1);
@@ -245,7 +245,7 @@ public final class SetBindingTest {
       @out(type=SET) String provideString2() { return "string2"; }
     }
 
-    O graph = O.load(new DynamicLoader(), new TestModule());
+    O graph = O.via(new DynamicLoader(), new TestModule());
     graph.validate();
   }
 
@@ -262,7 +262,7 @@ public final class SetBindingTest {
       }
     }
 
-    O graph = O.load(new DynamicLoader(), new TestModule());
+    O graph = O.via(new DynamicLoader(), new TestModule());
     graph.validate();
   }
 
@@ -280,7 +280,7 @@ public final class SetBindingTest {
     @the(in = TestEntryPoint.class, extend = SetModule.class)
     class TestModule {}
 
-    O graph = O.load(new DynamicLoader(),
+    O graph = O.via(new DynamicLoader(),
         new TestModule(), new SetModule());
     graph.validate();
   }
@@ -307,7 +307,7 @@ public final class SetBindingTest {
     @the(in = TestEntryPoint.class, extend = { SetModule1.class, SetModule2.class })
     class TestModule {}
 
-    O graph = O.load(new DynamicLoader(),
+    O graph = O.via(new DynamicLoader(),
         new TestModule(), new SetModule1(), new SetModule2());
     try {
       graph.validate();
@@ -340,7 +340,7 @@ public final class SetBindingTest {
   }
 
   private static <T> T injectWithModule(T ep, Object... modules) {
-    return O.load(new DynamicLoader(), modules).with(ep);
+    return O.via(new DynamicLoader(), modules).with(ep);
   }
 
   private static <T> Set<T> set(T... ts) {

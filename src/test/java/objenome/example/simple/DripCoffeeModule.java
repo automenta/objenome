@@ -10,7 +10,7 @@ import javax.inject.Singleton;
 )
 public class DripCoffeeModule {
   @out
-  @Singleton Heater provideHeater() {
+  @Singleton Heater heater() {
     return new ElectricHeater();
   }
 }

@@ -83,8 +83,8 @@ public final class SetBinding<T> extends Binding<Set<T>> {
 
     @Override
     public void attach(Linker linker) {
-        for (Binding<?> contributor : contributors) {
-            contributor.attach(linker);
+        for (int i = 0, contributorsSize = contributors.size(); i < contributorsSize; i++) {
+            contributors.get(i).attach(linker);
         }
     }
 

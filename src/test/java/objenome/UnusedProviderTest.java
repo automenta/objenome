@@ -27,94 +27,105 @@ import static org.junit.Assert.fail;
 @RunWith(JUnit4.class)
 public class UnusedProviderTest {
 
-  @Test public void unusedProvidesMethod_whenModuleLibrary_passes() throws Exception {
-    class EntryPoint {
-    }
-    class BagOfMoney {
-    }
-    @the(in = EntryPoint.class, library = true) class TestModule {
-      @out
-      BagOfMoney providesMoney() {
-        return new BagOfMoney();
-      }
+    @Test
+    public void unusedProvidesMethod_whenModuleLibrary_passes() throws Exception {
+        class EntryPoint {
+        }
+        class BagOfMoney {
+        }
+        @the(in = EntryPoint.class, library = true)
+        class TestModule {
+            @out
+            BagOfMoney providesMoney() {
+                return new BagOfMoney();
+            }
+        }
+
+        O graph = O.of(new TestModule());
+        graph.validate();
     }
 
-    O graph = O.load(new DynamicLoader(), new TestModule());
-    graph.validate();
-  }
+    @Test
+    public void unusedProviderMethod_whenNotLibraryModule_fails() throws Exception {
+        class EntryPoint {
+        }
+        class BagOfMoney {
+        }
 
-  @Test public void unusedProviderMethod_whenNotLibraryModule_fails() throws Exception {
-    class EntryPoint {
-    }
-    class BagOfMoney {
-    }
+        @the(in = EntryPoint.class)
+        class TestModule {
+            @out
+            BagOfMoney providesMoney() {
+                return new BagOfMoney();
+            }
+        }
 
-    @the(in = EntryPoint.class) class TestModule {
-      @out
-      BagOfMoney providesMoney() {
-        return new BagOfMoney();
-      }
-    }
-
-    try {
-      O graph = O.load(new DynamicLoader(), new TestModule());
-      graph.validate();
-      fail("Validation should have exploded!");
-    } catch (IllegalStateException expected) {
-    }
-  }
-
-  @Test public void whenLibraryModulePlussedToNecessaryModule_shouldNotFailOnUnusedLibraryModule()
-      throws Exception {
-    class EntryPoint {
-    }
-    class BagOfMoney {
+        try {
+            O graph = O.of(new TestModule());
+            graph.validate();
+            fail("Validation should have exploded!");
+        } catch (IllegalStateException expected) {
+        }
     }
 
-    @the(in = EntryPoint.class, library = true) class ExampleLibraryModule {
-      @out
-      BagOfMoney providesMoney() {
-        return new BagOfMoney();
-      }
+    @Test
+    public void whenLibraryModulePlussedToNecessaryModule_shouldNotFailOnUnusedLibraryModule()
+            throws Exception {
+        class EntryPoint {
+        }
+        class BagOfMoney {
+        }
+
+        @the(in = EntryPoint.class, library = true)
+        class ExampleLibraryModule {
+            @out
+            BagOfMoney providesMoney() {
+                return new BagOfMoney();
+            }
+        }
+
+        @the(in = EntryPoint.class)
+        class TestModule {
+        }
+
+        O graph = O.of(new TestModule());
+        graph = graph.plus(new ExampleLibraryModule());
+        graph.validate();
     }
 
-    @the(in = EntryPoint.class) class TestModule {
+    @Test
+    public void unusedSetBinding() throws Exception {
+        @the
+        class TestModule {
+            @out(type = out.Type.SET)
+            String provideA() {
+                throw new AssertionError();
+            }
+        }
+
+        O graph = O.of(new TestModule());
+        try {
+            graph.validate();
+            fail();
+        } catch (IllegalStateException expected) {
+        }
     }
 
-    O graph = O.load(new DynamicLoader(), new TestModule());
-    graph = graph.plus(new ExampleLibraryModule());
-    graph.validate();
-  }
+    @Test
+    public void unusedSetValuesBinding() throws Exception {
+        @the
+        class TestModule {
+            @out(type = out.Type.SET_VALUES)
+            Set<String> provideA() {
+                throw new AssertionError();
+            }
+        }
 
-  @Test public void unusedSetBinding() throws Exception {
-    @the
-    class TestModule {
-      @out(type = out.Type.SET) String provideA() {
-        throw new AssertionError();
-      }
+        O graph = O.of(new TestModule());
+        try {
+            graph.validate();
+            fail();
+        } catch (IllegalStateException expected) {
+        }
     }
-
-    O graph = O.load(new DynamicLoader(), new TestModule());
-    try {
-      graph.validate();
-      fail();
-    } catch (IllegalStateException expected) {
-    }
-  }
-
-  @Test public void unusedSetValuesBinding() throws Exception {
-    @the
-    class TestModule {
-      @out(type = out.Type.SET_VALUES) Set<String> provideA() {
-        throw new AssertionError();
-      }
-    }
-
-    O graph = O.load(new DynamicLoader(), new TestModule());
-    try {
-      graph.validate();
-      fail();
-    } catch (IllegalStateException expected) {
-    }
-  }
 }

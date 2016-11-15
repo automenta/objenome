@@ -138,6 +138,6 @@ public final class InjectionOfLazyTest {
   }
 
   private static <T> T injectWithModule(T ep, Object... modules) {
-    return O.load(new DynamicLoader(), modules).with(ep);
+    return O.via(new DynamicLoader(), modules).with(ep);
   }
 }

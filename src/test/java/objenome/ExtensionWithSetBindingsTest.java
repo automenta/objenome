@@ -76,7 +76,7 @@ public final class ExtensionWithSetBindingsTest {
   }
 
   @Test public void basicInjectionWithExtension() {
-    O root = O.load(new DynamicLoader(), new RootModule());
+    O root = O.via(new DynamicLoader(), new RootModule());
     RealSingleton rs = root.a(RealSingleton.class);
     assertThat(rs.ints).containsExactly(0, 1);
 
@@ -98,7 +98,7 @@ public final class ExtensionWithSetBindingsTest {
 
   @Test public void basicInjectionWithExtensionAndOverrides() {
     try {
-      O.load(new DynamicLoader(), new RootModule()).plus(new TestModule());
+      O.via(new DynamicLoader(), new RootModule()).plus(new TestModule());
       fail("Should throw exception.");
     } catch (IllegalArgumentException e) {
       assertEquals("TestModule: Module overrides cannot contribute set bindings.", e.getMessage());
@@ -107,7 +107,7 @@ public final class ExtensionWithSetBindingsTest {
 
   @Test public void duplicateBindingsInSecondaryModule() {
     try {
-      O.load(new DynamicLoader(), new EmptyModule(), new DuplicateModule());
+      O.via(new DynamicLoader(), new EmptyModule(), new DuplicateModule());
       fail("Should throw exception.");
     } catch (IllegalArgumentException e) {
       assertTrue(e.getMessage().startsWith("DuplicateModule: Duplicate"));

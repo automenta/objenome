@@ -63,12 +63,12 @@ public final class ExtensionTest {
   static class ExtensionModule { }
 
   @Test public void basicExtension() {
-    assertNotNull(O.load(new DynamicLoader(), new RootModule())
+    assertNotNull(O.via(new DynamicLoader(), new RootModule())
         .plus(new ExtensionModule()));
   }
 
   @Test public void basicInjection() {
-    O root = O.load(new DynamicLoader(), new RootModule());
+    O root = O.via(new DynamicLoader(), new RootModule());
     assertThat(root.a(A.class)).isNotNull();
     assertThat(root.a(A.class)).isSameAs(root.a(A.class)); // Present and Singleton.
     assertThat(root.a(B.class)).isNotSameAs(root.a(B.class)); // Not singleton.
@@ -86,7 +86,7 @@ public final class ExtensionTest {
   }
 
   @Test public void scopedGraphs() {
-    O app = O.load(new DynamicLoader(), new RootModule());
+    O app = O.via(new DynamicLoader(), new RootModule());
     assertThat(app.a(A.class)).isNotNull();
     assertThat(app.a(A.class)).isSameAs(app.a(A.class));
     assertThat(app.a(B.class)).isNotSameAs(app.a(B.class));

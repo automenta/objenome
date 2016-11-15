@@ -36,7 +36,7 @@ public class CoffeeMakerTest {
         in = CoffeeMakerTest.class,
         override = true
     ) public static class TestModule {
-        @out @Singleton Heater provideHeater() {
+        @out @Singleton Heater heater() {
             return Mockito.mock(Heater.class);
         }
     }

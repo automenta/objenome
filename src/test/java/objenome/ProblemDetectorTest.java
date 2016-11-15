@@ -34,7 +34,7 @@ public final class ProblemDetectorTest {
     class TestModule {
     }
 
-    O graph = O.load(new DynamicLoader(), new TestModule());
+    O graph = O.via(new DynamicLoader(), new TestModule());
     try {
       graph.validate();
       fail();
@@ -55,7 +55,7 @@ public final class ProblemDetectorTest {
       }
     }
 
-    O graph = O.load(new DynamicLoader(), new TestModule());
+    O graph = O.via(new DynamicLoader(), new TestModule());
     try {
       graph.validate();
       fail();
@@ -76,7 +76,7 @@ public final class ProblemDetectorTest {
       }
     }
 
-    O graph = O.load(new DynamicLoader(), new TestModule());
+    O graph = O.via(new DynamicLoader(), new TestModule());
     graph.validate();
   }
 

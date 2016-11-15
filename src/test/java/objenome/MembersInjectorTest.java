@@ -33,207 +33,218 @@ import static org.junit.Assert.fail;
  */
 @RunWith(JUnit4.class)
 public final class MembersInjectorTest {
-  @Test public void injectMembers() {
-    class TestEntryPoint {
-      @in
-      MembersInjector<Injectable> membersInjector;
+    @Test
+    public void injectMembers() {
+        class TestEntryPoint {
+            @in
+            MembersInjector<Injectable> membersInjector;
+        }
+
+        @the(in = TestEntryPoint.class)
+        class StringModule {
+            @out
+            String provideString() {
+                return "injected";
+            }
+        }
+
+        TestEntryPoint entryPoint = new TestEntryPoint();
+        O.of(new StringModule()).with(entryPoint);
+        Injectable injectable = new Injectable();
+        entryPoint.membersInjector.injectMembers(injectable);
+        assertThat(injectable.injected).isEqualTo("injected");
     }
 
-    @the(in = TestEntryPoint.class)
-    class StringModule {
-      @out
-      String provideString() {
-        return "injected";
-      }
+    static class Injectable {
+        @in
+        String injected;
     }
 
-    TestEntryPoint entryPoint = new TestEntryPoint();
-    O.load(new DynamicLoader(), new StringModule()).with(entryPoint);
-    Injectable injectable = new Injectable();
-    entryPoint.membersInjector.injectMembers(injectable);
-    assertThat(injectable.injected).isEqualTo("injected");
-  }
+    static class Unconstructable {
+        final String constructor;
+        @in
+        String injected;
 
-  static class Injectable {
-    @in
-    String injected;
-  }
-
-  static class Unconstructable {
-    final String constructor;
-    @in
-    String injected;
-    Unconstructable(String constructor) {
-      this.constructor = constructor;
-    }
-  }
-
-  @Test public void membersInjectorOfUnconstructableIsOkay() {
-    class TestEntryPoint {
-      @in
-      MembersInjector<Unconstructable> membersInjector;
+        Unconstructable(String constructor) {
+            this.constructor = constructor;
+        }
     }
 
-    @the(in = TestEntryPoint.class)
-    class StringModule {
-      @out
-      String provideString() {
-        return "injected";
-      }
+    @Test
+    public void membersInjectorOfUnconstructableIsOkay() {
+        class TestEntryPoint {
+            @in
+            MembersInjector<Unconstructable> membersInjector;
+        }
+
+        @the(in = TestEntryPoint.class)
+        class StringModule {
+            @out
+            String provideString() {
+                return "injected";
+            }
+        }
+
+        TestEntryPoint entryPoint = new TestEntryPoint();
+        O.of(new StringModule()).with(entryPoint);
+        Unconstructable object = new Unconstructable("constructor");
+        entryPoint.membersInjector.injectMembers(object);
+        assertThat(object.constructor).isEqualTo("constructor");
+        assertThat(object.injected).isEqualTo("injected");
     }
 
-    TestEntryPoint entryPoint = new TestEntryPoint();
-    O.load(new DynamicLoader(), new StringModule()).with(entryPoint);
-    Unconstructable object = new Unconstructable("constructor");
-    entryPoint.membersInjector.injectMembers(object);
-    assertThat(object.constructor).isEqualTo("constructor");
-    assertThat(object.injected).isEqualTo("injected");
-  }
 
+    @Test
+    public void injectionOfUnconstructableFails() {
+        class TestEntryPoint {
+            @in
+            Unconstructable unconstructable;
+        }
 
-  @Test public void injectionOfUnconstructableFails() {
-    class TestEntryPoint {
-      @in
-      Unconstructable unconstructable;
+        @the(in = TestEntryPoint.class)
+        class TestModule {
+        }
+
+        O graph = O.of(new TestModule());
+        try {
+            graph.a(TestEntryPoint.class);
+            fail();
+        } catch (IllegalStateException expected) {
+        }
     }
 
-    @the(in = TestEntryPoint.class)
-    class TestModule {
+    @Test
+    public void instanceInjectionOfMembersOnlyType() {
+        class TestEntryPoint {
+            @in
+            Provider<Unconstructable> provider;
+        }
+
+        @the(in = TestEntryPoint.class)
+        class TestModule {
+        }
+
+        O graph = O.of(new TestModule());
+        try {
+            graph.a(TestEntryPoint.class);
+            fail();
+        } catch (IllegalStateException expected) {
+        }
     }
 
-    O graph = O.load(new DynamicLoader(), new TestModule());
-    try {
-      graph.a(TestEntryPoint.class);
-      fail();
-    } catch (IllegalStateException expected) {
-    }
-  }
+    @Test
+    public void rejectUnconstructableSingleton() {
+        class TestEntryPoint {
+            @in
+            MembersInjector<UnconstructableSingleton> membersInjector;
+        }
 
-  @Test public void instanceInjectionOfMembersOnlyType() {
-    class TestEntryPoint {
-      @in
-      Provider<Unconstructable> provider;
-    }
+        @the(in = TestEntryPoint.class)
+        class TestModule {
+        }
 
-    @the(in = TestEntryPoint.class)
-    class TestModule {
-    }
-
-    O graph = O.load(new DynamicLoader(), new TestModule());
-    try {
-      graph.a(TestEntryPoint.class);
-      fail();
-    } catch (IllegalStateException expected) {
-    }
-  }
-
-  @Test public void rejectUnconstructableSingleton() {
-    class TestEntryPoint {
-      @in
-      MembersInjector<UnconstructableSingleton> membersInjector;
+        O graph = O.of(new TestModule());
+        try {
+            graph.a(TestEntryPoint.class);
+            fail();
+        } catch (IllegalStateException expected) {
+        }
     }
 
-    @the(in = TestEntryPoint.class)
-    class TestModule {
+    @Singleton
+    static class UnconstructableSingleton {
+        final String constructor;
+        @in
+        String injected;
+
+        UnconstructableSingleton(String constructor) {
+            this.constructor = constructor;
+        }
     }
 
-    O graph = O.load(new DynamicLoader(), new TestModule());
-    try {
-      graph.a(TestEntryPoint.class);
-      fail();
-    } catch (IllegalStateException expected) {
-    }
-  }
-
-  @Singleton
-  static class UnconstructableSingleton {
-    final String constructor;
-    @in
-    String injected;
-    UnconstructableSingleton(String constructor) {
-      this.constructor = constructor;
-    }
-  }
-
-  static class NonStaticInner {
-    @in
-    String injected;
-  }
-
-  @Test public void membersInjectorOfNonStaticInnerIsOkay() {
-    class TestEntryPoint {
-      @in
-      MembersInjector<NonStaticInner> membersInjector;
+    static class NonStaticInner {
+        @in
+        String injected;
     }
 
-    @the(in = TestEntryPoint.class)
-    class TestModule {
-      @out
-      String provideString() {
-        return "injected";
-      }
+    @Test
+    public void membersInjectorOfNonStaticInnerIsOkay() {
+        class TestEntryPoint {
+            @in
+            MembersInjector<NonStaticInner> membersInjector;
+        }
+
+        @the(in = TestEntryPoint.class)
+        class TestModule {
+            @out
+            String provideString() {
+                return "injected";
+            }
+        }
+
+        TestEntryPoint entryPoint = new TestEntryPoint();
+        O.of(new TestModule()).with(entryPoint);
+        NonStaticInner nonStaticInner = new NonStaticInner();
+        entryPoint.membersInjector.injectMembers(nonStaticInner);
+        assertThat(nonStaticInner.injected).isEqualTo("injected");
     }
 
-    TestEntryPoint entryPoint = new TestEntryPoint();
-    O.load(new DynamicLoader(), new TestModule()).with(entryPoint);
-    NonStaticInner nonStaticInner = new NonStaticInner();
-    entryPoint.membersInjector.injectMembers(nonStaticInner);
-    assertThat(nonStaticInner.injected).isEqualTo("injected");
-  }
+    @Test
+    public void instanceInjectionOfNonStaticInnerFailsEarly() {
+        class TestEntryPoint {
+            @in
+            NonStaticInner nonStaticInner;
+        }
 
-  @Test public void instanceInjectionOfNonStaticInnerFailsEarly() {
-    class TestEntryPoint {
-      @in
-      NonStaticInner nonStaticInner;
+        @the(in = TestEntryPoint.class)
+        class TestModule {
+        }
+
+        O graph = O.of(new TestModule());
+        try {
+            graph.a(TestEntryPoint.class);
+            fail();
+        } catch (IllegalStateException expected) {
+        }
     }
 
-    @the(in = TestEntryPoint.class)
-    class TestModule {
+    @Test
+    public void providesMethodsAndMembersInjectionDoNotConflict() {
+        class InjectsString {
+            @in
+            String value;
+        }
+
+        class TestEntryPoint {
+            @in
+            Provider<InjectsString> provider;
+            @in
+            MembersInjector<InjectsString> membersInjector;
+        }
+
+        @the(in = TestEntryPoint.class)
+        class TestModule {
+            @out
+            InjectsString provideInjectsString() {
+                InjectsString result = new InjectsString();
+                result.value = "provides";
+                return result;
+            }
+
+            @out
+            String provideString() {
+                return "members";
+            }
+        }
+
+        TestEntryPoint entryPoint = new TestEntryPoint();
+        O.of(new TestModule()).with(entryPoint);
+
+        InjectsString provided = entryPoint.provider.get();
+        assertThat(provided.value).isEqualTo("provides");
+
+        InjectsString membersInjected = new InjectsString();
+        entryPoint.membersInjector.injectMembers(membersInjected);
+        assertThat(membersInjected.value).isEqualTo("members");
     }
-
-    O graph = O.load(new DynamicLoader(), new TestModule());
-    try {
-      graph.a(TestEntryPoint.class);
-      fail();
-    } catch (IllegalStateException expected) {
-    }
-  }
-
-  @Test public void providesMethodsAndMembersInjectionDoNotConflict() {
-    class InjectsString {
-      @in
-      String value;
-    }
-
-    class TestEntryPoint {
-      @in
-      Provider<InjectsString> provider;
-      @in
-      MembersInjector<InjectsString> membersInjector;
-    }
-
-    @the(in = TestEntryPoint.class)
-    class TestModule {
-      @out
-      InjectsString provideInjectsString() {
-        InjectsString result = new InjectsString();
-        result.value = "provides";
-        return result;
-      }
-      @out
-      String provideString() {
-        return "members";
-      }
-    }
-
-    TestEntryPoint entryPoint = new TestEntryPoint();
-    O.load(new DynamicLoader(), new TestModule()).with(entryPoint);
-
-    InjectsString provided = entryPoint.provider.get();
-    assertThat(provided.value).isEqualTo("provides");
-
-    InjectsString membersInjected = new InjectsString();
-    entryPoint.membersInjector.injectMembers(membersInjected);
-    assertThat(membersInjected.value).isEqualTo("members");
-  }
 }

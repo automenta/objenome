@@ -73,7 +73,7 @@ public final class ThreadSafetyTest {
   @Test public void concurrentSingletonAccess() throws Exception {
     final List<Future<Long>> futures = new ArrayList<Future<Long>>();
     final O graph =
-        O.load(new DynamicLoader(), new LatchingModule(latch));
+        O.via(new DynamicLoader(), new LatchingModule(latch));
     for (int i = 0; i < THREAD_COUNT; i++) {
       futures.add(es.submit(new Callable<Long>() {
         @Override public Long call() {
@@ -93,7 +93,7 @@ public final class ThreadSafetyTest {
   @Test public void concurrentLazyAccess() throws Exception {
     final List<Future<Integer>> futures = new ArrayList<Future<Integer>>();
     final O graph =
-        O.load(new DynamicLoader(), new LatchingModule(latch));
+        O.via(new DynamicLoader(), new LatchingModule(latch));
     final LazyEntryPoint lep = graph.a(LazyEntryPoint.class);
     for (int i = 0; i < THREAD_COUNT; i++) {
       futures.add(es.submit(new Callable<Integer>() {

@@ -5,7 +5,7 @@ import objenome.out;
 
 @the(complete = false, library = true)
 class PumpModule {
-  @out Pump providePump(Thermosiphon pump) {
+  @out Pump pump(Thermosiphon pump) {
     return pump;
   }
 }

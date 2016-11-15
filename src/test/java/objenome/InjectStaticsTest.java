@@ -51,7 +51,7 @@ public final class InjectStaticsTest {
       }
     }
 
-    O graph = O.load(new DynamicLoader(),new TestModule());
+    O graph = O.via(new DynamicLoader(),new TestModule());
     assertThat(InjectsOneField.staticField).isNull();
     graph.injectStatics();
     assertThat(InjectsOneField.staticField).isEqualTo("static");
@@ -72,7 +72,7 @@ public final class InjectStaticsTest {
       }
     }
 
-    O graph = O.load(new DynamicLoader(), new TestModule());
+    O graph = O.via(new DynamicLoader(), new TestModule());
     assertThat(InjectsStaticAndNonStatic.staticField).isNull();
     graph.injectStatics();
     assertThat(InjectsStaticAndNonStatic.staticField).isEqualTo("static");
@@ -93,7 +93,7 @@ public final class InjectStaticsTest {
       }
     }
 
-    O graph = O.load(new DynamicLoader(), new TestModule());
+    O graph = O.via(new DynamicLoader(), new TestModule());
     assertThat(InjectsStaticAndNonStatic.staticField).isNull();
     InjectsStaticAndNonStatic object = new InjectsStaticAndNonStatic();
     graph.with(object);

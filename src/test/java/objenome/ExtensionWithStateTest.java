@@ -50,7 +50,7 @@ public final class ExtensionWithStateTest {
 
   @Test public void basicInjectionWithExtension() {
     A a = new A();
-    O root = O.load(new DynamicLoader(), new RootModule(a));
+    O root = O.via(new DynamicLoader(), new RootModule(a));
     assertThat(root.a(A.class)).isSameAs(a);
 
     // Extension graph behaves as the root graph would for root-ish things.

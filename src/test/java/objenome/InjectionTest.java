@@ -54,7 +54,7 @@ public final class InjectionTest {
         }
 
         TestEntryPoint entryPoint = new TestEntryPoint();
-        O.load(new DynamicLoader(), new TestModule()).with(entryPoint);
+        O.of(new TestModule()).with(entryPoint);
         G g = entryPoint.gProvider.get();
         assertThat(g.a).isNotNull();
         assertThat(g.b).isNotNull();
@@ -130,7 +130,7 @@ public final class InjectionTest {
         }
 
         TestEntryPoint entryPoint = new TestEntryPoint();
-        O.load(new DynamicLoader(), new TestModule()).with(entryPoint);
+        O.of(new TestModule()).with(entryPoint);
 
         assertThat(entryPoint.aProvider.get()).isNotNull();
         assertThat(entryPoint.aProvider.get()).isNotNull();
@@ -157,7 +157,7 @@ public final class InjectionTest {
         }
 
         TestEntryPoint entryPoint = new TestEntryPoint();
-        O.load(new DynamicLoader(), new TestModule()).with(entryPoint);
+        O.of(new TestModule()).with(entryPoint);
         assertThat(entryPoint.fProvider.get()).isSameAs(entryPoint.fProvider.get());
         assertThat(entryPoint.iProvider.get()).isSameAs(entryPoint.iProvider.get());
     }
@@ -201,7 +201,7 @@ public final class InjectionTest {
         }
 
         TestEntryPoint entryPoint = new TestEntryPoint();
-        O.load(new DynamicLoader(), new TestModule()).with(entryPoint);
+        O.of(new TestModule()).with(entryPoint);
         assertThat(entryPoint.a).isNotNull();
         assertThat(one).isSameAs(entryPoint.aOne);
         assertThat(two).isSameAs(entryPoint.aTwo);
@@ -231,7 +231,7 @@ public final class InjectionTest {
 
         TestEntryPoint entryPoint = new TestEntryPoint();
         TestModule module = new TestModule();
-        O.load(new DynamicLoader(), module).with(entryPoint);
+        O.of(module).with(entryPoint);
         entryPoint.lProvider.get();
 
         assertThat(module.a1).isNotNull();
@@ -272,7 +272,7 @@ public final class InjectionTest {
         }
 
         TestEntryPoint entryPoint = new TestEntryPoint();
-        O.load(new DynamicLoader(), new TestModule()).with(entryPoint);
+        O.of(new TestModule()).with(entryPoint);
 
         assertThat(entryPoint.f1).isSameAs(entryPoint.f2);
         assertThat(entryPoint.f1).isSameAs(entryPoint.n1.f1);
@@ -304,7 +304,7 @@ public final class InjectionTest {
         class TestModule {
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         try {
             graph.validate();
             fail();
@@ -328,7 +328,7 @@ public final class InjectionTest {
         }
 
         TestEntryPoint entryPoint = new TestEntryPoint();
-        O.load(new DynamicLoader(), new TestModule()).with(entryPoint);
+        O.of(new TestModule()).with(entryPoint);
         assertThat(entryPoint.q.f).isNotNull();
     }
 
@@ -344,7 +344,7 @@ public final class InjectionTest {
         }
 
         TestEntryPoint entryPoint = new TestEntryPoint();
-        O.load(new DynamicLoader(), new TestModule()).with(entryPoint);
+        O.of(new TestModule()).with(entryPoint);
         assertThat(entryPoint.t).isNotNull();
     }
 
@@ -395,7 +395,7 @@ public final class InjectionTest {
         R.injected = false;
         TestEntryPoint entryPoint = new TestEntryPoint();
         TestModule module = new TestModule();
-        O.load(new DynamicLoader(), module).with(entryPoint);
+        O.of(module).with(entryPoint);
 
         assertThat(R.injected).isFalse();
         assertThat(module.sInjected).isFalse();
@@ -430,7 +430,7 @@ public final class InjectionTest {
 
         TestEntryPoint entryPoint = new TestEntryPoint();
         TestModule module = new TestModule();
-        O.load(new DynamicLoader(), module).with(entryPoint);
+        O.of(module).with(entryPoint);
 
         assertThat(entryPoint.set).isSameAs(set);
     }
@@ -454,7 +454,7 @@ public final class InjectionTest {
 
         TestEntryPoint entryPoint = new TestEntryPoint();
         TestModule module = new TestModule();
-        O.load(new DynamicLoader(), module).with(entryPoint);
+        O.of(module).with(entryPoint);
 
         // copies into immutable collection
         assertThat(entryPoint.set).isNotSameAs(set);
@@ -477,7 +477,7 @@ public final class InjectionTest {
         }
 
         try {
-            O.load(new DynamicLoader(), new TestModule());
+            O.of(new TestModule());
             fail();
         } catch (IllegalArgumentException expected) {
         }
@@ -499,7 +499,7 @@ public final class InjectionTest {
         }
 
         try {
-            O.load(new DynamicLoader(), new TestModule());
+            O.of(new TestModule());
             fail();
         } catch (IllegalArgumentException expected) {
         }
@@ -521,7 +521,7 @@ public final class InjectionTest {
         }
 
         try {
-            O.load(new DynamicLoader(), new TestModule());
+            O.of(new TestModule());
             fail();
         } catch (IllegalArgumentException expected) {
         }
@@ -554,7 +554,7 @@ public final class InjectionTest {
 
         TestEntryPoint entryPoint = new TestEntryPoint();
         TestModule module = new TestModule();
-        O.load(new DynamicLoader(), module).with(entryPoint);
+        O.of(module).with(entryPoint);
 
         // copies into immutable collection
         assertThat(entryPoint.set).isNotSameAs(set);
@@ -579,7 +579,7 @@ public final class InjectionTest {
         }
 
         TestEntryPoint entryPoint = new TestEntryPoint();
-        O.load(new DynamicLoader(), new TestModule()).with(entryPoint);
+        O.of(new TestModule()).with(entryPoint);
         assertThat(entryPoint.aProvider.get()).isSameAs(entryPoint.aProvider.get());
     }
 
@@ -612,7 +612,7 @@ public final class InjectionTest {
         }
 
         TestEntryPoint entryPoint = new TestEntryPoint();
-        O.load(new DynamicLoader(), new BaseModule(), new OverridesModule()).with(entryPoint);
+        O.of(new BaseModule(), new OverridesModule()).with(entryPoint);
         E e = entryPoint.eProvider.get();
         assertThat(e).isNotNull();
         assertThat(e.f).isNotNull();
@@ -629,7 +629,7 @@ public final class InjectionTest {
         class TestModule {
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         try {
             graph.validate();
             fail();
@@ -653,7 +653,7 @@ public final class InjectionTest {
             }
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         graph.validate();
         assertThat(graph.a(Runnable.class)).isSameAs(runnable);
     }
@@ -669,7 +669,7 @@ public final class InjectionTest {
         class TestModule {
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         try {
             graph.validate();
             fail();
@@ -712,7 +712,7 @@ public final class InjectionTest {
         }
 
         TestEntryPoint entryPoint = new TestEntryPoint();
-        O.load(new DynamicLoader(), new TestModule()).with(entryPoint);
+        O.of(new TestModule()).with(entryPoint);
         assertThat(entryPoint.extendsParameterizedType.string).isEqualTo("injected");
     }
 
@@ -732,7 +732,7 @@ public final class InjectionTest {
         }
 
         TestEntryPoint entryPoint = new TestEntryPoint();
-        O.load(new DynamicLoader(), new TestModule()).with(entryPoint);
+        O.of(new TestModule()).with(entryPoint);
         assertThat(entryPoint.listOfStrings).isEqualTo(Arrays.asList("a", "b"));
     }
 
@@ -752,7 +752,7 @@ public final class InjectionTest {
         }
 
         try {
-            O.load(new DynamicLoader(), new TestModule());
+            O.of(new TestModule());
             fail();
         } catch (UnsupportedOperationException expected) {
         }
@@ -779,7 +779,7 @@ public final class InjectionTest {
             }
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         try {
             graph.validate();
             fail();
@@ -793,7 +793,7 @@ public final class InjectionTest {
         class TestModule {
         }
 
-        O.load(new DynamicLoader(), new TestModule());
+        O.of(new TestModule());
     }
 
     @Test
@@ -808,7 +808,7 @@ public final class InjectionTest {
             }
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         assertThat(graph.a(Integer.class)).isEqualTo(0);
         assertThat(graph.a(Integer.class)).isEqualTo(1);
     }
@@ -823,7 +823,7 @@ public final class InjectionTest {
             }
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         try {
             graph.a(Integer.class);
             fail();
@@ -841,7 +841,7 @@ public final class InjectionTest {
             }
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         assertEquals(1, (int) graph.a(int.class));
     }
 
@@ -855,7 +855,7 @@ public final class InjectionTest {
             }
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         assertEquals("[1, 2, 3]", Arrays.toString(graph.a(int[].class)));
     }
 
@@ -881,7 +881,7 @@ public final class InjectionTest {
             }
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         BoundTwoWays provided = graph.a(BoundTwoWays.class);
         assertEquals("Pepsi", provided.s);
 
@@ -901,7 +901,7 @@ public final class InjectionTest {
         class TestModule {
         }
 
-        O.load(new DynamicLoader(), new TestModule()).validate();
+        O.of(new TestModule()).validate();
     }
 
     static class InjectMembersOnly {
@@ -922,7 +922,7 @@ public final class InjectionTest {
             }
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         try {
             graph.a(InjectMembersOnly.class);
             fail();
@@ -944,7 +944,7 @@ public final class InjectionTest {
             }
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         try {
             graph.validate();
             fail();
@@ -972,7 +972,7 @@ public final class InjectionTest {
             }
         }
 
-        O graph = O.load(new DynamicLoader(), new TestModule());
+        O graph = O.of(new TestModule());
         try {
             graph.validate();
             fail();
@@ -996,7 +996,7 @@ public final class InjectionTest {
         }
 
         try {
-            O.load(new DynamicLoader(), new TestModule()).with(new TestEntryPoint());
+            O.of(new TestModule()).with(new TestEntryPoint());
             fail();
         } catch (ClassCastException e) {
             assertThat(e.getMessage()).isEqualTo("foo");
@@ -1017,7 +1017,7 @@ public final class InjectionTest {
         }
 
         try {
-            O.load(new DynamicLoader(), new TestModule()).a(ThrowsOnConstruction.class);
+            O.of(new TestModule()).a(ThrowsOnConstruction.class);
             fail();
         } catch (ClassCastException e) {
             assertThat(e.getMessage()).isEqualTo("foo");
@@ -1039,7 +1039,7 @@ public final class InjectionTest {
 
     @Test
     public void testSingletonLinkingThroughExtensionGraph() {
-        O root = O.load(new DynamicLoader(), new RootModule());
+        O root = O.of(new RootModule());
         // DO NOT CALL root.get(C.class)) HERE to get forced-linking behaviour from plus();
         O extension = root.plus(new ExtensionModule());
         assertThat(extension.a(SingletonLinkedFromExtension.class).c).isSameAs(root.a(C.class));
@@ -1061,7 +1061,7 @@ public final class InjectionTest {
         }
 
         try {
-            O.load(new DynamicLoader(), new TestModule()).with(new Test());
+            O.of(new TestModule()).with(new Test());
             fail();
         } catch (IllegalStateException e) {
             assertThat(e.getMessage()).contains("Can't inject private field: ");
@@ -1081,7 +1081,7 @@ public final class InjectionTest {
         }
 
         try {
-            O.load(new DynamicLoader(), new TestModule()).a(Test.class);
+            O.of(new TestModule()).a(Test.class);
             fail();
         } catch (IllegalStateException e) {
             assertThat(e.getMessage()).contains("Can't inject private constructor: ");
@@ -1097,7 +1097,7 @@ public final class InjectionTest {
         class TestModule {
         }
 
-        O objectGraph = O.load(new DynamicLoader(), new TestModule());
+        O objectGraph = O.of(new TestModule());
         objectGraph.validate();
         try {
             objectGraph.a(ArrayList.class);

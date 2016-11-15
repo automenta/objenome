@@ -16,6 +16,7 @@
  */
 package objenome;
 
+import io.advantageous.boon.core.reflection.ClassMeta;
 import objenome.impl.*;
 import objenome.impl.loaders.DynamicLoader;
 
@@ -118,15 +119,22 @@ public abstract class O {
      */
     public static O of(Object... modules) {
         //return DaggerObjectGraph.makeGraph(null, new FailoverLoader(), modules);
-        return load(
+        return via(
                 //new FailoverLoader(),
                 new DynamicLoader(),
                 modules);
     }
 
-    // visible for testing
-    public static O load(Loader loader, Object... modules) {
-        return DaggerObjectGraph.newGraph(null, loader, modules);
+    /** more specific than of, includes the method by which something can be derived from (a Loader 'strategy') */
+    public static O via(Loader strategy, Object... modules) {
+        return DaggerObjectGraph.newGraph(null, strategy, modules);
+    }
+
+
+    /** enter "into" a class to explore it */
+    public static ClassMeta<?> in(Class<?> c) {
+        return new ClassMeta<>(c);
+        //return ClassMeta.classMetaEither(c);
     }
 
 
@@ -143,9 +151,9 @@ public abstract class O {
 
         public StandardBindings(List<SetBinding<?>> baseSetBindings) {
             setBindings = new ArrayList<>(baseSetBindings.size());
-            for (SetBinding<?> sb : baseSetBindings) {
+            for (int i = 0, baseSetBindingsSize = baseSetBindings.size(); i < baseSetBindingsSize; i++) {
                 @SuppressWarnings({"rawtypes", "unchecked"})
-                SetBinding<?> child = new SetBinding(sb);
+                SetBinding<?> child = new SetBinding(baseSetBindings.get(i));
                 setBindings.add(child);
                 put(child.provideKey, child);
             }

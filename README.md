@@ -46,7 +46,7 @@ Constructor, method, or field annotation indicating a dependency target.  (Repla
 Value exported via a method's return value.  (Replaces @Provide)
 
 ```java
-@outSomeObject getSomeObject() { ...
+@out SomeObject getSomeObject() { ...
 ```
 
 
